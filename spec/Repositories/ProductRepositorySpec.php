@@ -9,7 +9,6 @@ use Illuminate\Support\Collection;
 use MrPiatek\BlueServer\Exceptions\InvalidAmountException;
 use MrPiatek\BlueServer\Interfaces\ProductsRepositoryInterface;
 use MrPiatek\BlueServer\Models\Product;
-use MrPiatek\BlueServer\Entities\Product as ProductEntity;
 use MrPiatek\BlueServer\Repositories\ProductRepository;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -42,7 +41,8 @@ class ProductRepositorySpec extends ObjectBehavior
 
     function it_gets_products_in_stock(Product $productModel, Builder $query)
     {
-        $productsInStock = array_filter(self::PRODUCTS_IN_DATABASE, function ($product) {
+        $productsInStock = new Collection(self::PRODUCTS_IN_DATABASE);
+        $productsInStock->filter(function ($product) {
             return $product['amount'] > 0;
         });
 
@@ -53,23 +53,15 @@ class ProductRepositorySpec extends ObjectBehavior
             ->willReturn($query);
         $query->get()
             ->shouldBeCalled()
-            ->willReturn(new Collection($productsInStock));
+            ->willReturn($productsInStock);
 
-        $expectedResult = [];
-        foreach ($productsInStock as $product) {
-            $expectedResult[] = new ProductEntity(
-                $product['id'],
-                $product['name'],
-                $product['amount']
-            );
-        }
-
-        $this->getProductsInStock()->shouldBeLike($expectedResult);
+        $this->getProductsInStock()->shouldBeLike($productsInStock);
     }
 
     function it_gets_products_out_of_stock(Product $productModel, Builder $query)
     {
-        $productsOutOfStock = array_filter(self::PRODUCTS_IN_DATABASE, function ($product) {
+        $productsOutOfStock = new Collection(self::PRODUCTS_IN_DATABASE);
+        $productsOutOfStock->filter(function ($product) {
             return $product['amount'] = 0;
         });
 
@@ -82,23 +74,15 @@ class ProductRepositorySpec extends ObjectBehavior
             ->shouldBeCalled()
             ->willReturn(new Collection($productsOutOfStock));
 
-        $expectedResult = [];
-        foreach ($productsOutOfStock as $product) {
-            $expectedResult[] = new ProductEntity(
-                $product['id'],
-                $product['name'],
-                $product['amount']
-            );
-        }
-
-        $this->getProductsOutOfStock()->shouldBeLike($expectedResult);
+        $this->getProductsOutOfStock()->shouldBeLike($productsOutOfStock);
     }
 
     function it_gets_products_with_amount_over(Product $productModel, Builder $query)
     {
         $amountOverValue = 5;
         for ($i = 1; $i <= $amountOverValue; $i++) {
-            $products = array_filter(self::PRODUCTS_IN_DATABASE, function ($product) use ($i) {
+            $products = new Collection(self::PRODUCTS_IN_DATABASE);
+            $products->filter(function ($product) use ($i) {
                 return $product['amount'] > $i;
             });
 
@@ -111,17 +95,8 @@ class ProductRepositorySpec extends ObjectBehavior
                 ->shouldBeCalled()
                 ->willReturn(new Collection($products));
 
-            $expectedResult = [];
-            foreach ($products as $product) {
-                $expectedResult[] = new ProductEntity(
-                    $product['id'],
-                    $product['name'],
-                    $product['amount']
-                );
-            }
-
             $this->getProductsWithAmountOver($i)
-                ->shouldBeLike($expectedResult);
+                ->shouldBeLike($products);
         }
     }
 
@@ -133,16 +108,16 @@ class ProductRepositorySpec extends ObjectBehavior
 
     function it_should_add_new_product(Product $productModel, Builder $query)
     {
-        $newProduct = [
+        $newProduct = new Product([
             'name' => 'Gaming PC',
             'amount' => 3
-        ];
+        ]);
 
         $productModel->newQuery()->shouldBeCalled();
 
-        $query->create($newProduct)->shouldBeCalled();
+        $query->create($newProduct->toArray())->shouldBeCalled();
 
-        $this->addNewProduct(new ProductEntity(null, $newProduct['name'], $newProduct['amount']));
+        $this->addNewProduct($newProduct);
     }
 
     function it_should_remove_product(Product $productModel, Builder $query)
@@ -162,20 +137,20 @@ class ProductRepositorySpec extends ObjectBehavior
 
     function it_should_update_product(Product $productModel, Builder $query)
     {
-        $productToUpdate = new ProductEntity(
-            3,
-            'New Laptop',
-            0
-        );
+        $productToUpdate = new Product([
+            'id' => 3,
+            'name' => 'New Laptop',
+            'amount' => 0
+        ]);
 
         $productModel->newQuery()->shouldBeCalled();
 
-        $query->where('id', '=', $productToUpdate->getId())
+        $query->where('id', '=', $productToUpdate->id)
             ->shouldBeCalled()
             ->willReturn($query);
         $query->update([
-            'name' => $productToUpdate->getName(),
-            'amount' => $productToUpdate->getAmount()
+            'name' => $productToUpdate->name,
+            'amount' => $productToUpdate->amount
         ])
             ->shouldBeCalled();
 

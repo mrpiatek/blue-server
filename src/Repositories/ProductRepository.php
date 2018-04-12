@@ -4,9 +4,9 @@ namespace MrPiatek\BlueServer\Repositories;
 
 use Illuminate\Container\Container as App;
 use Illuminate\Support\Collection;
-use MrPiatek\BlueServer\Entities\Product as ProductEntity;
 use MrPiatek\BlueServer\Exceptions\InvalidAmountException;
 use MrPiatek\BlueServer\Interfaces\ProductsRepositoryInterface;
+use MrPiatek\BlueServer\Models\Product;
 
 class ProductRepository implements ProductsRepositoryInterface
 {
@@ -32,54 +32,29 @@ class ProductRepository implements ProductsRepositoryInterface
     }
 
     /**
-     * Parses Laravel Collection to a ProductEntity array.
-     *
-     * @param Collection $productsCollection
-     * @return ProductEntity[]
-     */
-    private function parseResults(Collection $productsCollection): array
-    {
-        $result = [];
-        foreach ($productsCollection as $productModel) {
-            $product = (object)$productModel;
-            $result[] = new ProductEntity(
-                $product->id,
-                $product->name,
-                $product->amount
-            );
-        }
-
-        return $result;
-    }
-
-    /**
      * Gets all products that are in stock.
      *
-     * @return ProductEntity[] Array of products
+     * @return Collection<Product> Collection of products
      */
-    public function getProductsInStock(): array
+    public function getProductsInStock(): Collection
     {
-        $productsCollection = $this->model
+        return $this->model
             ->newQuery()
             ->where('amount', '>', 0)
             ->get();
-
-        return $this->parseResults($productsCollection);
     }
 
     /**
      * Gets all products that are out of stock.
      *
-     * @return ProductEntity[] Array of products
+     * @return Collection<Product> Collection of products
      */
-    public function getProductsOutOfStock(): array
+    public function getProductsOutOfStock(): Collection
     {
-        $productsCollection = $this->model
+        return $this->model
             ->newQuery()
             ->where('amount', '=', 0)
             ->get();
-
-        return $this->parseResults($productsCollection);
     }
 
     /**
@@ -87,37 +62,32 @@ class ProductRepository implements ProductsRepositoryInterface
      *
      * @param int $amount Value
      *
-     * @return ProductEntity[] Array of products
+     * @return Collection<Product> Collection of products
      *
      * @throws InvalidAmountException
      */
-    public function getProductsWithAmountOver(int $amount): array
+    public function getProductsWithAmountOver(int $amount): Collection
     {
         if ($amount < 0) {
             throw new InvalidAmountException();
         }
 
-        $productsCollection = $this->model
+        return $this->model
             ->newQuery()
             ->where('amount', '>', $amount)
             ->get();
-
-        return $this->parseResults($productsCollection);
     }
 
     /**
      * Adds new product.
      *
-     * @param ProductEntity $product Product data
+     * @param Product $product Product data
      *
      * @return void
      */
-    public function addNewProduct(ProductEntity $product): void
+    public function addNewProduct(Product $product): void
     {
-        $this->model->newQuery()->create([
-            'name' => $product->getName(),
-            'amount' => $product->getAmount()
-        ]);
+        $this->model->newQuery()->create($product->toArray());
     }
 
     /**
@@ -138,18 +108,15 @@ class ProductRepository implements ProductsRepositoryInterface
     /**
      * Updates product with given ID with data provided.
      *
-     * @param ProductEntity $product Product data
+     * @param Product $product Product data
      *
      * @return void
      */
-    public function updateProduct(ProductEntity $product): void
+    public function updateProduct(Product $product): void
     {
         $this->model
             ->newQuery()
-            ->where('id', '=', $product->getId())
-            ->update([
-                'name' => $product->getName(),
-                'amount' => $product->getAmount()
-            ]);
+            ->where('id', '=', $product->id)
+            ->update($product->toArray());
     }
 }

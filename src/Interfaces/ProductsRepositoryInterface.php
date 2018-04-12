@@ -3,7 +3,8 @@
 namespace MrPiatek\BlueServer\Interfaces;
 
 
-use MrPiatek\BlueServer\Entities\Product;
+use Illuminate\Support\Collection;
+use MrPiatek\BlueServer\Models\Product;
 use MrPiatek\BlueServer\Exceptions\InvalidAmountException;
 
 interface ProductsRepositoryInterface
@@ -11,27 +12,27 @@ interface ProductsRepositoryInterface
     /**
      * Gets all products that are in stock.
      *
-     * @return Product[] Array of products
+     * @return Collection<Product> Collection of products
      */
-    public function getProductsInStock(): array;
+    public function getProductsInStock(): Collection;
 
     /**
      * Gets all products that are out of stock.
      *
-     * @return Product[] Array of products
+     * @return Collection<Product> Collection of products
      */
-    public function getProductsOutOfStock(): array;
+    public function getProductsOutOfStock(): Collection;
 
     /**
      * Gets all products with amount greater than given value.
      *
      * @param int $amount Value
      *
-     * @return Product[] Array of products
+     * @return Collection<Product> Collection of products
      *
      * @throws InvalidAmountException
      */
-    public function getProductsWithAmountOver(int $amount): array;
+    public function getProductsWithAmountOver(int $amount): Collection;
 
     /**
      * Adds new product.
