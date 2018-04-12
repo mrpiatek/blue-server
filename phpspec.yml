@@ -1,0 +1,6 @@
+suites:
+    default:
+        namespace: MrPiatek\BlueServer\
+        psr4_prefix: MrPiatek\BlueServer\
+        src_path: src
+        spec_prefix: spec
