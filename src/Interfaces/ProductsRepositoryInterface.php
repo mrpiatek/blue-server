@@ -5,7 +5,6 @@ namespace MrPiatek\BlueServer\Interfaces;
 
 use MrPiatek\BlueServer\Entities\Product;
 use MrPiatek\BlueServer\Exceptions\InvalidAmountException;
-use MrPiatek\BlueServer\Exceptions\InvalidProductIdException;
 
 interface ProductsRepositoryInterface
 {
@@ -49,20 +48,15 @@ interface ProductsRepositoryInterface
      * @param int $productId Product ID
      *
      * @return void
-     *
-     * @throws InvalidProductIdException
      */
     public function removeProduct(int $productId): void;
 
     /**
      * Updates product with given ID with data provided.
      *
-     * @param int $productId Product ID
      * @param Product $product Product data
      *
      * @return void
-     *
-     * @throws InvalidProductIdException
      */
-    public function updateProduct(int $productId, Product $product): void;
+    public function updateProduct(Product $product): void;
 }
