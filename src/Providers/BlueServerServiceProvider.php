@@ -3,6 +3,8 @@
 namespace MrPiatek\BlueServer\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use MrPiatek\BlueServer\Interfaces\ProductsRepositoryInterface;
+use MrPiatek\BlueServer\Repositories\ProductRepository;
 
 class BlueServerServiceProvider extends ServiceProvider
 {
@@ -14,6 +16,7 @@ class BlueServerServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/../routes.php');
     }
 
     /**
@@ -23,6 +26,6 @@ class BlueServerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(ProductsRepositoryInterface::class, ProductRepository::class);
     }
 }

@@ -57,4 +57,13 @@ class Product
     {
         return $this->id;
     }
+
+    public function toArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'amount' => $this->getAmount(),
+        ];
+    }
 }
