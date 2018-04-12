@@ -16,13 +16,20 @@ class Product
     private $amount;
 
     /**
+     * @var int|null Product ID
+     */
+    private $id;
+
+    /**
      * Product constructor.
      *
+     * @param int|null $id
      * @param string $name Product's name
      * @param int $amount Amount of the product currently in stock
      */
-    public function __construct(string $name, int $amount)
+    public function __construct(?int $id, string $name, int $amount)
     {
+        $this->id = $id;
         $this->name = $name;
         $this->amount = $amount;
     }
@@ -41,5 +48,13 @@ class Product
     public function getAmount(): int
     {
         return $this->amount;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 }
