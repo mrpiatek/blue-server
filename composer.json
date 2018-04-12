@@ -1,0 +1,27 @@
+{
+    "name": "mrpiatek/blue-server",
+    "description": "Server side package for the Blue application.",
+    "type": "library",
+    "require-dev": {
+        "phpspec/phpspec": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "MrPiatek\\BlueServer\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MrPiatek\\BlueServer\\Providers\\BlueServerServiceProvider"
+            ]
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mariusz Piątek",
+            "email": "mariusz.piatek92@gmail.com"
+        }
+    ]
+}
