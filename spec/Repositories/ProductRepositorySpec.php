@@ -128,6 +128,57 @@ class ProductRepositorySpec extends ObjectBehavior
     function it_throws_exception_on_invalid_amount()
     {
         $this->shouldThrow(InvalidAmountException::class)
-        ->duringGetProductsWithAmountOver(-1);
+            ->duringGetProductsWithAmountOver(-1);
+    }
+
+    function it_should_add_new_product(Product $productModel, Builder $query)
+    {
+        $newProduct = [
+            'name' => 'Gaming PC',
+            'amount' => 3
+        ];
+
+        $productModel->newQuery()->shouldBeCalled();
+
+        $query->create($newProduct)->shouldBeCalled();
+
+        $this->addNewProduct(new ProductEntity(null, $newProduct['name'], $newProduct['amount']));
+    }
+
+    function it_should_remove_product(Product $productModel, Builder $query)
+    {
+        $productIdToRemove = 2;
+
+        $productModel->newQuery()->shouldBeCalled();
+
+        $query->where('id', '=', $productIdToRemove)
+            ->shouldBeCalled()
+            ->willReturn($query);
+        $query->delete()
+            ->shouldBeCalled();
+
+        $this->removeProduct($productIdToRemove);
+    }
+
+    function it_should_update_product(Product $productModel, Builder $query)
+    {
+        $productToUpdate = new ProductEntity(
+            3,
+            'New Laptop',
+            0
+        );
+
+        $productModel->newQuery()->shouldBeCalled();
+
+        $query->where('id', '=', $productToUpdate->getId())
+            ->shouldBeCalled()
+            ->willReturn($query);
+        $query->update([
+            'name' => $productToUpdate->getName(),
+            'amount' => $productToUpdate->getAmount()
+        ])
+            ->shouldBeCalled();
+
+        $this->updateProduct($productToUpdate);
     }
 }
