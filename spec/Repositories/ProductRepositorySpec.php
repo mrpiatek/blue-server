@@ -41,8 +41,7 @@ class ProductRepositorySpec extends ObjectBehavior
 
     function it_gets_products_in_stock(Product $productModel, Builder $query)
     {
-        $productsInStock = new Collection(self::PRODUCTS_IN_DATABASE);
-        $productsInStock->filter(function ($product) {
+        $productsInStock = array_filter(self::PRODUCTS_IN_DATABASE, function ($product) {
             return $product['amount'] > 0;
         });
 
@@ -53,15 +52,14 @@ class ProductRepositorySpec extends ObjectBehavior
             ->willReturn($query);
         $query->get()
             ->shouldBeCalled()
-            ->willReturn($productsInStock);
+            ->willReturn(new Collection($productsInStock));
 
         $this->getProductsInStock()->shouldBeLike($productsInStock);
     }
 
     function it_gets_products_out_of_stock(Product $productModel, Builder $query)
     {
-        $productsOutOfStock = new Collection(self::PRODUCTS_IN_DATABASE);
-        $productsOutOfStock->filter(function ($product) {
+        $productsOutOfStock = array_filter(self::PRODUCTS_IN_DATABASE, function ($product) {
             return $product['amount'] = 0;
         });
 
@@ -81,8 +79,7 @@ class ProductRepositorySpec extends ObjectBehavior
     {
         $amountOverValue = 5;
         for ($i = 1; $i <= $amountOverValue; $i++) {
-            $products = new Collection(self::PRODUCTS_IN_DATABASE);
-            $products->filter(function ($product) use ($i) {
+            $products = array_filter(self::PRODUCTS_IN_DATABASE, function ($product) use ($i) {
                 return $product['amount'] > $i;
             });
 

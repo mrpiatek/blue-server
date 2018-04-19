@@ -3,8 +3,6 @@
 namespace MrPiatek\BlueServer\Interfaces;
 
 
-use Illuminate\Support\Collection;
-use MrPiatek\BlueServer\Models\Product;
 use MrPiatek\BlueServer\Exceptions\InvalidAmountException;
 
 interface ProductsRepositoryInterface
@@ -12,36 +10,36 @@ interface ProductsRepositoryInterface
     /**
      * Gets all products that are in stock.
      *
-     * @return Collection<Product> Collection of products
+     * @return ProductInterface[] array of products
      */
-    public function getProductsInStock(): Collection;
+    public function getProductsInStock(): array;
 
     /**
      * Gets all products that are out of stock.
      *
-     * @return Collection<Product> Collection of products
+     * @return ProductInterface[] array of products
      */
-    public function getProductsOutOfStock(): Collection;
+    public function getProductsOutOfStock(): array;
 
     /**
      * Gets all products with amount greater than given value.
      *
      * @param int $amount Value
      *
-     * @return Collection<Product> Collection of products
+     * @return ProductInterface[] array of products
      *
      * @throws InvalidAmountException
      */
-    public function getProductsWithAmountOver(int $amount): Collection;
+    public function getProductsWithAmountOver(int $amount): array;
 
     /**
      * Adds new product.
      *
-     * @param Product $product Product data
+     * @param ProductInterface $product Product
      *
      * @return void
      */
-    public function addNewProduct(Product $product): void;
+    public function addNewProduct(ProductInterface $product): void;
 
     /**
      * Removes product with given ID.
@@ -55,9 +53,9 @@ interface ProductsRepositoryInterface
     /**
      * Updates product with given ID with data provided.
      *
-     * @param Product $product Product data
+     * @param ProductInterface $product Product
      *
      * @return void
      */
-    public function updateProduct(Product $product): void;
+    public function updateProduct(ProductInterface $product): void;
 }

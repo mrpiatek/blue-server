@@ -3,22 +3,22 @@
 namespace MrPiatek\BlueServer\Repositories;
 
 use Illuminate\Container\Container as App;
-use Illuminate\Support\Collection;
 use MrPiatek\BlueServer\Exceptions\InvalidAmountException;
+use MrPiatek\BlueServer\Interfaces\ProductInterface;
 use MrPiatek\BlueServer\Interfaces\ProductsRepositoryInterface;
 use MrPiatek\BlueServer\Models\Product;
 
 class ProductRepository implements ProductsRepositoryInterface
 {
 
-    const MODEL_CLASS = \MrPiatek\BlueServer\Models\Product::class;
+    const MODEL_CLASS = Product::class;
     /**
      * @var App
      */
     private $app;
 
     /**
-     * @var \MrPiatek\BlueServer\Models\Product
+     * @var Product
      */
     private $model;
 
@@ -34,27 +34,29 @@ class ProductRepository implements ProductsRepositoryInterface
     /**
      * Gets all products that are in stock.
      *
-     * @return Collection<Product> Collection of products
+     * @return ProductInterface[] array of products
      */
-    public function getProductsInStock(): Collection
+    public function getProductsInStock(): array
     {
         return $this->model
             ->newQuery()
             ->where('amount', '>', 0)
-            ->get();
+            ->get()
+            ->toArray();
     }
 
     /**
      * Gets all products that are out of stock.
      *
-     * @return Collection<Product> Collection of products
+     * @return ProductInterface[] array of products
      */
-    public function getProductsOutOfStock(): Collection
+    public function getProductsOutOfStock(): array
     {
         return $this->model
             ->newQuery()
             ->where('amount', '=', 0)
-            ->get();
+            ->get()
+            ->toArray();
     }
 
     /**
@@ -62,11 +64,11 @@ class ProductRepository implements ProductsRepositoryInterface
      *
      * @param int $amount Value
      *
-     * @return Collection<Product> Collection of products
+     * @return ProductInterface[] array of products
      *
      * @throws InvalidAmountException
      */
-    public function getProductsWithAmountOver(int $amount): Collection
+    public function getProductsWithAmountOver(int $amount): array
     {
         if ($amount < 0) {
             throw new InvalidAmountException();
@@ -75,17 +77,18 @@ class ProductRepository implements ProductsRepositoryInterface
         return $this->model
             ->newQuery()
             ->where('amount', '>', $amount)
-            ->get();
+            ->get()
+            ->toArray();
     }
 
     /**
      * Adds new product.
      *
-     * @param Product $product Product data
+     * @param ProductInterface $product Product data
      *
      * @return void
      */
-    public function addNewProduct(Product $product): void
+    public function addNewProduct(ProductInterface $product): void
     {
         $this->model->newQuery()->create($product->toArray());
     }
@@ -108,11 +111,11 @@ class ProductRepository implements ProductsRepositoryInterface
     /**
      * Updates product with given ID with data provided.
      *
-     * @param Product $product Product data
+     * @param ProductInterface $product Product data
      *
      * @return void
      */
-    public function updateProduct(Product $product): void
+    public function updateProduct(ProductInterface $product): void
     {
         $this->model
             ->newQuery()
