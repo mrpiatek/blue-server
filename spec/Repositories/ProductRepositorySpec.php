@@ -54,7 +54,7 @@ class ProductRepositorySpec extends ObjectBehavior
             ->shouldBeCalled()
             ->willReturn(new Collection($productsInStock));
 
-        $this->getProductsInStock()->shouldBeLike($productsInStock);
+        $this->getProductsInStock()->shouldBeLike(new Collection($productsInStock));
     }
 
     function it_gets_products_out_of_stock(Product $productModel, Builder $query)
@@ -72,7 +72,7 @@ class ProductRepositorySpec extends ObjectBehavior
             ->shouldBeCalled()
             ->willReturn(new Collection($productsOutOfStock));
 
-        $this->getProductsOutOfStock()->shouldBeLike($productsOutOfStock);
+        $this->getProductsOutOfStock()->shouldBeLike(new Collection($productsOutOfStock));
     }
 
     function it_gets_products_with_amount_over(Product $productModel, Builder $query)
@@ -93,7 +93,7 @@ class ProductRepositorySpec extends ObjectBehavior
                 ->willReturn(new Collection($products));
 
             $this->getProductsWithAmountOver($i)
-                ->shouldBeLike($products);
+                ->shouldBeLike(new Collection($products));
         }
     }
 
@@ -134,15 +134,16 @@ class ProductRepositorySpec extends ObjectBehavior
 
     function it_should_update_product(Product $productModel, Builder $query)
     {
+
+        $productId = 3;
         $productToUpdate = new Product([
-            'id' => 3,
             'name' => 'New Laptop',
             'amount' => 0
         ]);
 
         $productModel->newQuery()->shouldBeCalled();
 
-        $query->where('id', '=', $productToUpdate->id)
+        $query->where('id', '=', $productId)
             ->shouldBeCalled()
             ->willReturn($query);
         $query->update([
@@ -151,6 +152,6 @@ class ProductRepositorySpec extends ObjectBehavior
         ])
             ->shouldBeCalled();
 
-        $this->updateProduct($productToUpdate);
+        $this->updateProduct($productId, $productToUpdate);
     }
 }

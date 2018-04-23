@@ -118,6 +118,6 @@ class ProductRepository implements ProductsRepositoryInterface
         $this->model
             ->newQuery()
             ->where('id', '=', $productId)
-            ->update(array_filter($product->toArray()));
+            ->update($product->toArray());
     }
 }
