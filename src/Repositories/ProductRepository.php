@@ -34,29 +34,27 @@ class ProductRepository implements ProductsRepositoryInterface
     /**
      * Gets all products that are in stock.
      *
-     * @return ProductInterface[] array of products
+     * @return \ArrayAccess array of products
      */
-    public function getProductsInStock(): array
+    public function getProductsInStock(): \ArrayAccess
     {
         return $this->model
             ->newQuery()
             ->where('amount', '>', 0)
-            ->get()
-            ->toArray();
+            ->get();
     }
 
     /**
      * Gets all products that are out of stock.
      *
-     * @return ProductInterface[] array of products
+     * @return \ArrayAccess array of products
      */
-    public function getProductsOutOfStock(): array
+    public function getProductsOutOfStock(): \ArrayAccess
     {
         return $this->model
             ->newQuery()
             ->where('amount', '=', 0)
-            ->get()
-            ->toArray();
+            ->get();
     }
 
     /**
@@ -64,11 +62,11 @@ class ProductRepository implements ProductsRepositoryInterface
      *
      * @param int $amount Value
      *
-     * @return ProductInterface[] array of products
+     * @return \ArrayAccess array of products
      *
      * @throws InvalidAmountException
      */
-    public function getProductsWithAmountOver(int $amount): array
+    public function getProductsWithAmountOver(int $amount): \ArrayAccess
     {
         if ($amount < 0) {
             throw new InvalidAmountException();
@@ -77,8 +75,7 @@ class ProductRepository implements ProductsRepositoryInterface
         return $this->model
             ->newQuery()
             ->where('amount', '>', $amount)
-            ->get()
-            ->toArray();
+            ->get();
     }
 
     /**
@@ -111,15 +108,16 @@ class ProductRepository implements ProductsRepositoryInterface
     /**
      * Updates product with given ID with data provided.
      *
+     * @param int $productId
      * @param ProductInterface $product Product data
      *
      * @return void
      */
-    public function updateProduct(ProductInterface $product): void
+    public function updateProduct(int $productId, ProductInterface $product): void
     {
         $this->model
             ->newQuery()
-            ->where('id', '=', $product->id)
-            ->update($product->toArray());
+            ->where('id', '=', $productId)
+            ->update(array_filter($product->toArray()));
     }
 }

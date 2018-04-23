@@ -10,27 +10,27 @@ interface ProductsRepositoryInterface
     /**
      * Gets all products that are in stock.
      *
-     * @return ProductInterface[] array of products
+     * @return \ArrayAccess array of products
      */
-    public function getProductsInStock(): array;
+    public function getProductsInStock(): \ArrayAccess;
 
     /**
      * Gets all products that are out of stock.
      *
-     * @return ProductInterface[] array of products
+     * @return \ArrayAccess array of products
      */
-    public function getProductsOutOfStock(): array;
+    public function getProductsOutOfStock(): \ArrayAccess;
 
     /**
      * Gets all products with amount greater than given value.
      *
      * @param int $amount Value
      *
-     * @return ProductInterface[] array of products
+     * @return \ArrayAccess array of products
      *
      * @throws InvalidAmountException
      */
-    public function getProductsWithAmountOver(int $amount): array;
+    public function getProductsWithAmountOver(int $amount): \ArrayAccess;
 
     /**
      * Adds new product.
@@ -53,9 +53,10 @@ interface ProductsRepositoryInterface
     /**
      * Updates product with given ID with data provided.
      *
+     * @param int $productId
      * @param ProductInterface $product Product
      *
      * @return void
      */
-    public function updateProduct(ProductInterface $product): void;
+    public function updateProduct(int $productId, ProductInterface $product): void;
 }
