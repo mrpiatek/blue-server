@@ -2,6 +2,7 @@
 
 namespace MrPiatek\BlueServer\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller as BaseController;
 use MrPiatek\BlueServer\Http\Requests\StoreOrUpdateProduct;
 use MrPiatek\BlueServer\Interfaces\ProductInterface;
@@ -32,7 +33,14 @@ class ProductsModificationController extends BaseController
         $this->app = $app;
     }
 
-    public function store(StoreOrUpdateProduct $request)
+    /**
+     * Stores given product in the database.
+     *
+     * @param StoreOrUpdateProduct $request
+     *
+     * @return JsonResponse
+     */
+    public function store(StoreOrUpdateProduct $request): JsonResponse
     {
         $product = $this->createProductFromRequest($request->validated());
 
@@ -42,7 +50,15 @@ class ProductsModificationController extends BaseController
         return response()->json(null, 201);
     }
 
-    public function update(StoreOrUpdateProduct $request, $id)
+    /**
+     * Updates product with given ID.
+     *
+     * @param StoreOrUpdateProduct $request
+     * @param $id
+     *
+     * @return JsonResponse
+     */
+    public function update(StoreOrUpdateProduct $request, $id): JsonResponse
     {
         $product = $this->createProductFromRequest($request->validated());
 
@@ -51,7 +67,14 @@ class ProductsModificationController extends BaseController
         return response()->json(null, 204);
     }
 
-    public function destroy($id)
+    /**
+     * Destroys product with given ID.
+     *
+     * @param $id
+     *
+     * @return JsonResponse
+     */
+    public function destroy($id): JsonResponse
     {
         $this->productsRepository->removeProduct($id);
 
